@@ -104,7 +104,7 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 		<div id="init-lacking"><p>Browser lacks capabilities required to play.</p><p>Upgrade or switch to another browser.</p></div>
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
-	<tw-storydata name="Down south" startnode="75" creator="Twine" creator-version="2.10.0" format="SugarCube" format-version="2.37.3" ifid="E5972059-849E-4F47-9A35-885B14B2E800" options="" tags="" zoom="0.3" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">/* Advanced 90s Cyberpunk Twine Stylesheet with Enhanced Random Glitches */
+	<tw-storydata name="Down south" startnode="75" creator="Twine" creator-version="2.10.0" format="SugarCube" format-version="2.37.3" ifid="E5972059-849E-4F47-9A35-885B14B2E800" options="" tags="" zoom="0.6" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">/* Advanced 90s Cyberpunk Twine Stylesheet with Enhanced Random Glitches */
 /* Global Reset and Base Styling */
 body {
     background-color: #000033;
@@ -1413,6 +1413,154 @@ blockquote p {
     95% { 
         transform: translate(2px, -1px);
         opacity: 0.9;
+    }
+}
+
+/* Lux Effect - Elegant but glitchy with gold and cyan */
+.lux-text {
+    position: relative;
+    display: inline-block;
+    color: #FFD700; /* Gold color base */
+    font-family: 'Times New Roman', serif; /* More elegant font */
+    letter-spacing: 1px;
+    font-style: italic;
+    text-shadow: 0 0 5px #FFD700;
+    animation: lux-flicker 4s infinite cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* Create luxury flicker effect */
+@keyframes lux-flicker {
+    0%, 100% { 
+        color: #FFD700; 
+        text-shadow: 0 0 5px #FFD700;
+        transform: scale(1);
+    }
+    
+    25% {
+        color: #00FFFF; 
+        text-shadow: 0 0 8px #00FFFF, 0 0 12px #00FFFF;
+        transform: scale(1.02) translateX(1px);
+    }
+    
+    26% {
+        color: #FFFFFF;
+        text-shadow: 0 0 10px #FFFFFF;
+    }
+    
+    27% {
+        color: #00FFFF;
+        text-shadow: 0 0 8px #00FFFF;
+        transform: scale(0.98) translateX(-1px);
+    }
+    
+    50% {
+        color: #FFD700; 
+        text-shadow: 0 0 5px #FFD700;
+        transform: scale(1);
+    }
+    
+    75% {
+        color: #FF00FF; 
+        text-shadow: 0 0 8px #FF00FF, 0 0 12px #FF00FF;
+        transform: scale(1.02) translateY(-1px);
+    }
+    
+    76% {
+        color: #FFFFFF;
+        text-shadow: 0 0 10px #FFFFFF;
+    }
+    
+    77% {
+        color: #FF00FF;
+        text-shadow: 0 0 8px #FF00FF;
+        transform: scale(0.98) translateY(1px);
+    }
+}
+
+/* Add a "luxury" shimmer effect */
+.lux-text::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: rgba(255, 215, 0, 0.5); /* Gold with transparency */
+    z-index: -1;
+    animation: lux-shimmer 6s linear infinite;
+}
+
+@keyframes lux-shimmer {
+    0% { 
+        transform: translateX(-2px) translateY(1px);
+        opacity: 0.3;
+    }
+    25% { 
+        transform: translateX(1px) translateY(-1px);
+        opacity: 0.6;
+    }
+    50% { 
+        transform: translateX(2px) translateY(1px);
+        opacity: 0.3;
+    }
+    75% { 
+        transform: translateX(-1px) translateY(-1px);
+        opacity: 0.6;
+    }
+    100% { 
+        transform: translateX(-2px) translateY(1px);
+        opacity: 0.3;
+    }
+}
+
+/* Add occasional glitch effect */
+.lux-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #00FFFF; /* Cyan */
+    z-index: -2;
+    clip-path: inset(0 0 0 0);
+    animation: lux-glitch 8s infinite;
+}
+
+@keyframes lux-glitch {
+    0%, 91%, 100% { 
+        clip-path: inset(100% 0 0 0);
+        transform: translateX(0);
+    }
+    92% { 
+        clip-path: inset(20% 0 40% 0);
+        transform: translateX(2px);
+    }
+    93% { 
+        clip-path: inset(60% 0 20% 0);
+        transform: translateX(-2px);
+    }
+    94% { 
+        clip-path: inset(0 0 80% 0);
+        transform: translateX(1px);
+    }
+    95% { 
+        clip-path: inset(100% 0 0 0);
+        transform: translateX(0);
+    }
+}
+
+/* Add hover effect for extra luxury */
+.lux-text:hover {
+    animation: lux-hover 1s infinite;
+    text-shadow: 0 0 10px #FFD700, 0 0 15px #FFD700;
+}
+
+@keyframes lux-hover {
+    0%, 100% { 
+        color: #FFD700; 
+        transform: scale(1.05);
+    }
+    50% { 
+        color: #FFFFFF; 
+        text-shadow: 0 0 15px #FFFFFF, 0 0 20px #FFFFFF;
+        transform: scale(1.1);
     }
 }
 }</style><script role="script" id="twine-user-script" type="text/twine-javascript">// Add this to your Story JavaScript section
@@ -3001,6 +3149,7 @@ Macro.add('footnote', {
         $footnote.appendTo(this.output);
     }
 });
+
 // Add padding to the top of every passage
 $(document).on(':passagerender', function (ev) {
   // Add padding to the passage itself
@@ -3013,7 +3162,31 @@ Config.passages.onProcess = function(p) {
     return Story.get("PassageHeader").processText() + p.text;
   }
   return p.text;
-};</script><tw-passagedata pid="1" name="Wanna learn about the South..?" tags="" position="1350,1300" size="100,100">Y’ever been Down South? Not like &lt;&lt;footnote &quot;South Florida &quot;&gt;&gt; NEVER, South Florida... yeah, there are definitely a lot of red voters... but that don&#39;t mean shit when the other majority is them &#39;BEEPOCK&#39; libtards... y&#39;know... immigrants from like Cuba, and those damn YANKEES...&lt;&lt;/footnote&gt;&gt; or even &lt;&lt;footnote &quot;Texas&quot;&gt;&gt;Too many hispanics&lt;&lt;/footnote&gt;&gt;… they ain’t the real South. We’re talking bout the Deep South—the Bible Belt, as some say! Mississippi, Alabama, Louisiana, and the Florida Panhandle. It can be a fun place, sometimes.
+};
+// Wendel Lux effect - a luxury glitching effect with right alignment
+Macro.add('lux', {
+    tags: null,
+    handler: function() {
+        // Get the content
+        const content = this.payload[0].contents;
+        
+        // Create the wrapper element
+        const $wrapper = $(document.createElement('span'));
+        $wrapper.addClass('lux-text');
+        $wrapper.attr('data-text', content);
+        
+        // Add right alignment
+        $wrapper.css('text-align', 'right');
+        $wrapper.css('display', 'block'); // Make it a block element so text-align works
+        
+        // Add the content
+        $wrapper.wiki(content);
+        
+        // Append to output
+        $wrapper.appendTo(this.output);
+    }
+});
+</script><tw-passagedata pid="1" name="Wanna learn about the South..?" tags="" position="1350,1300" size="100,100">Y’ever been Down South? Not like &lt;&lt;footnote &quot;South Florida &quot;&gt;&gt; NEVER, South Florida... yeah, there are definitely a lot of red voters... but that don&#39;t mean shit when the other majority is them &#39;BEEPOCK&#39; libtards... y&#39;know... immigrants from like Cuba, and those damn YANKEES...&lt;&lt;/footnote&gt;&gt; or even &lt;&lt;footnote &quot;Texas&quot;&gt;&gt;Too many hispanics&lt;&lt;/footnote&gt;&gt;… they ain’t the real South. We’re talking bout the Deep South—the Bible Belt, as some say! Mississippi, Alabama, Louisiana, and the Florida Panhandle. It can be a fun place, sometimes.
 
 &lt;&lt;corrupt&gt;&gt;&lt;span style=&quot;font-size: 110%;&quot;&gt;As long as your white, American (no immigrants), and don’t use no woke, wussy ass language like they do in Portland.&lt;/span&gt;&lt;&lt;/corrupt&gt;&gt;
 
@@ -3971,31 +4144,61 @@ The Cove was different. A guy named Wendel Lux bought up a whole bunch of proper
 
 A large part of the power that feeds the Cove is the beliefs of the people there... and those beliefs are heavily influenced by the dreams that people have. The Cove has a way of making people dream things that are just real enough to scare you, but just fake enough to make it entertaining for others hiding their schadenfreude. So, in case you were wondering, that is the answer. The Cove has no connection to the outside world, so it creates entertainment for the people inside on a whim. The best way to do this is to broadcast the dreams of the inhabitants inside on channels it has created. The news even takes a strange turn, it is completely real, but the producers and actors are all fake. The people there manifested some people and they came to life, and their managers and producers and so on. The news channel had a nice younger white woman with bright purple hair and a young Mexican man with heterochromia iridum, one green and one pink. Is it what you think? Who knows...kind of morbid, but would the man go blind? 
 
-In the evenings, when the channels were not mimicking the fake news on the real news outside, they showed reality television. Everyone&#39;s favorite, [[Alice&#39;s Wet Nightmares]]...</tw-passagedata><tw-passagedata pid="36" name="the odd book" tags="" position="1625,200" size="100,100">I have been writing since I was five. Yes... That’s a really fucking early age to start a story. I mean, who does that? I was writing about dogs and how beautiful my dog Fifi was, or was it Fluffie? That shit was just baby me… well, you’d probably think that was true. What if I told you I was a little deviant… what if? You would really think I would have almost finished something. Five stories in the can, well, uh Scriveners… and some of them have been stewing for, what, ten… fifteen years? What is the point of finishing them right? I aim for some philosophical perspective and I go hard for about a week… and then I forget about it for four weeks…&#39;&#39;// a month. Why didn’t you just say a month?//&#39;&#39; The cycle repeats like some karma wheel. I get depressed for about a week. I sink myself into my faith the second week. I feel a little better in the third week, and start working on a new project. That inspires me to continue the old project, and then I do the whole thing over again. //&#39;&#39;And then you do the whole thing over again. Over and over and over and over… &#39;&#39;//again the days appear to merge collectively until I feel numb again and then, and then the depression…
+In the evenings, when the channels were not mimicking the fake news on the real news outside, they showed reality television. Everyone&#39;s favorite, [[Alice&#39;s Wet Nightmares]]...</tw-passagedata><tw-passagedata pid="36" name="the odd book" tags="" position="1600,100" size="100,100">&lt;&lt;malfunction&gt;&gt;I have been writing since I was like &lt;span class=&quot;pulse-text&quot;&gt;five.&lt;/span&gt;&lt;&lt;/malfunction&gt;&gt;
 
-I stare up at the ceiling… the clock above my head ticks at 4:19. Something weird happens. You know how the clocks colon will like, blink, marking seconds??? What if I told you it wasn&#39;t blinking? I’ve been counting inside of my head for about 90 seconds now, so I know I am not mad. The clock hasn’t advanced. I have been holding my blunt in my right hand the whole time… that preem[1] fuckin’ shit… and I got a little DMT loaded into a vaporizer in my left hand. I am about to fucking blast off man. “FUUCCKKK THIS!” I look over to grab my light and look at the clock on the nightstand. The fucker says 4:21. I look back up and the alarm clock above me is gone.
+&lt;&lt;distort&gt;&gt;Yes...&lt;&lt;/distort&gt;&gt; That’s a really fucking early age to start a story. I mean, who does that? I was writing about dogs and how beautiful my dog Fifi was, or was it Fluffie? That shit was just baby me… well, you’d probably think that was true. What if I told you I was a little deviant… what if? You would really think I would have almost finished something. 
 
-(align:&quot;&lt;==&quot;)+(box:&quot;=X&quot;)[The lights begin to dim until the room is pitch black. ]
+Five stories in the can, well, uh... Scriveners… and some of them have been stewing for, what, ten… fifteen years? What is the point of finishing them right? I aim for some philosophical perspective and I go hard for about a week… and then I forget about it for four weeks…
+
+&lt;&lt;lux&gt;&gt;a month. Why didn’t you just say a month?&lt;&lt;/lux&gt;&gt;
+
+The cycle repeats like some karma wheel. I get depressed for about a week. I sink myself into my faith the second week. I feel a little better in the third week, and start working on a new project. That inspires me to continue the old project, and then I do the whole thing over again--
+
+&lt;&lt;lux&gt;&gt;And then you do the whole thing over again. Over and over and over and over…&lt;&lt;/lux&gt;&gt;
+
+again the days appear to merge collectively until I feel numb again and then, and then the depression…
+
+I stare up at the ceiling… the clock above my head ticks at 4:19. 
+
+Something weird happens. 
+
+You know how the clocks colon will like, blink, marking seconds??? 
+
+What if I told you it wasn&#39;t blinking? 
+
+I’ve been counting inside of my head for about 90 seconds now, so I know I am not mad. 
+
+The clock hasn’t advanced.
+
+I have been holding my blunt in my right hand the whole time… 
+
+This that &lt;&lt;footnote &quot;preem&quot;&gt;&gt;This streetslang term is from the Cyberpunk RED and 2077 Universe. It means dope or cool, comes from premium, you scrubs.&lt;&lt;/footnote&gt;&gt; fuckin’ shit… 
+
+And I got a little DMT loaded into a vaporizer in my left hand. I am about to fucking blast off man. 
+
+“FUUCCKKK THIS!” 
+
+I look over to grab my light and see the clock on the nightstand. The fucker says 4:21. I look back up and the alarm clock above me is gone.
+
+&lt;&lt;lux&gt;&gt;The lights begin to dim until the room is pitch black.&lt;&lt;/lux&gt;&gt;
 
 The lights fucking dim off, and suddenly, I hear a crackle, crackle, crackle, crack-
 
-(align:&quot;&lt;==&quot;)+(box:&quot;=X&quot;)[The lighter flicks on… and begins to float.]
+&lt;&lt;lux&gt;&gt;The lighter flicks on… and begins to float.&lt;&lt;/lux&gt;&gt;
 
 My light clicks on and the flame moves around. 
 
-(align:&quot;&lt;==&quot;)+(box:&quot;=X&quot;)[Crackle-crack-crack—
+&lt;&lt;lux&gt;&gt;Crackle crack crack...&lt;&lt;/lux&gt;&gt;
 
-A hand extends with a spotlight shown on it.]
+&lt;&lt;lux&gt;&gt;A hand extends with a spotlight shown on it.&lt;&lt;/lux&gt;&gt;
 
 “Have I already took a hit off my?”
 
 The glowing hand holds my light, and I suddenly extend the blunt out.
 
-(align:&quot;&lt;==&quot;)+(box:&quot;=X&quot;)[tHE IMAGE OF, IMAGE OF, IMAGE OF, IMAGE OF.
+&lt;&lt;lux&gt;&gt;tHE IMAGE OF, IMAGE OF, IMAGE OF, IMAGE OF.
 
-bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe.]
-
-[1] This streetslang term is from the Cyberpunk RED and 2077 Universe. It means dope or cool, comes from premium, you scrubs.</tw-passagedata><tw-passagedata pid="37" name="walked forward a few feet" tags="" position="250,1200" size="100,100">I stepped out of my old Honda Civic onto the sandy asphalt. 
+bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe, bLaCk AnD wHiTe.&lt;&lt;/lux&gt;&gt;</tw-passagedata><tw-passagedata pid="37" name="walked forward a few feet" tags="" position="250,1200" size="100,100">I stepped out of my old Honda Civic onto the sandy asphalt. 
 
 A slight crunching under my jet-black non-slip shoes was cut off as I stopped and began to hear the sounds of a guitar and perhaps a conga from a distance.
 
