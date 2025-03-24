@@ -12,7 +12,7 @@
 If you are here anyway... then you should play my game.  
 I hope it doesn't become too much...
 
-## ₴Ø₥Ɇ₮Ⱨł₦₲ ł₴ ₦Ø₮ Ɽł₲Ⱨ₮ ⱧɆⱤɆ ł₦ ₳ⱫɄⱤɆ:
+## ₴Ø₥Ɇ₮Ⱨł₦₲ ł₴ ₦Ø₮ Ɽł₲Ⱨ₮ ⱧɆⱤɆ ł₦ ₳ⱫɄⱤɆ ₵ØVɆ:
 
 **[Go down south...](https://wendellux.github.io/wendelluxor/)**
 
