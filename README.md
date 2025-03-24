@@ -14,7 +14,7 @@ I hope it doesn't become too much...
 
 ## 🎮 Play Now
 
-**[Play Azure Cove Online](https://wendellux.github.io/wendelluxor/)**
+**[Go down south...](https://wendellux.github.io/wendelluxor/)**
 
 > ℹ️ For mobile phone play, be sure to turn your phone sideways, or else risk an ugly game.  
 > See author's note within the game for further info and a link to the credits.
