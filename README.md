@@ -9,3 +9,5 @@ I hope it doesn't become too much...
 https://wendellux.github.io/wendelluxor/
 
 For mobile phone play, be sure to turn your phone sideways, or else risk an ugly game.
+
+THIS GAME IS A WORK IN PROGRESS... SEE LICENSES FOR FURTHER INFORMATION
