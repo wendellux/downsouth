@@ -5,7 +5,7 @@ Copyright © 2025 Wendel Lux. All Rights Reserved.
 ## Terms and Conditions
 
 1. **Copyright Notice**  
-   All content, including but not limited to code, text, graphics, images, designs, interactive features, story elements, characters, settings, plots, and narratives contained within this repository/project ("Down south" is the exclusive property of Wendel Lux and is protected by United States and international copyright laws.
+   All content, including but not limited to code, text, graphics, images, designs, interactive features, story elements, characters, settings, plots, and narratives contained within this repository/project ("Down south") is the exclusive property of Wendel Lux and is protected by United States and international copyright laws.
 
 2. **Restrictions**  
    Without explicit written permission from Wendel Lux, you may not:
@@ -33,6 +33,6 @@ Copyright © 2025 Wendel Lux. All Rights Reserved.
    This license is effective until terminated. It will terminate automatically if you fail to comply with any term or condition. Upon termination, you must destroy all copies of materials obtained from this project.
 
 8. **Governing Law**  
-   This license shall be governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
+   This license shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.
 
 © 2025 Wendel Lux. All Rights Reserved.
