@@ -4997,11 +4997,117 @@ Look it says [[Micah D&#39;s Recording]]
 
 
 [[See what Dick and Chuck are doing]] 
-[[See the quarters]]</tw-passagedata><tw-passagedata pid="27" name="a firefighter" tags="" position="675,925" size="100,100"></tw-passagedata><tw-passagedata pid="28" name="do not click me" tags="" position="1275,650" size="100,100">Good one... now let&#39;s maybe not click every button.
+[[See the quarters]]</tw-passagedata><tw-passagedata pid="27" name="a firefighter" tags="" position="675,925" size="100,100"></tw-passagedata><tw-passagedata pid="28" name="do not click me" tags="" position="1275,650" size="100,100">&lt;div id=&quot;glitch-container&quot; style=&quot;text-align: center; margin: 20px 0; font-family: monospace;&quot;&gt;
+  &lt;div style=&quot;color: #FF0000; text-shadow: 2px 2px 0 #800000, -2px -2px 0 #FF00FF; font-size: 18px; letter-spacing: 1px;&quot;&gt;
+    Good one... now let&#39;s maybe not click every button.
+  &lt;/div&gt;
+  
+  &lt;div style=&quot;margin-top: 15px;&quot;&gt;
+    &lt;&lt;script&gt;&gt;
+      // Create a full-screen glitch overlay
+      const overlay = document.createElement(&#39;div&#39;);
+      overlay.id = &#39;glitch-overlay&#39;;
+      overlay.style.position = &#39;fixed&#39;;
+      overlay.style.top = &#39;0&#39;;
+      overlay.style.left = &#39;0&#39;;
+      overlay.style.width = &#39;100%&#39;;
+      overlay.style.height = &#39;100%&#39;;
+      overlay.style.backgroundColor = &#39;#000033&#39;;
+      overlay.style.zIndex = &#39;9999&#39;;
+      overlay.style.overflow = &#39;hidden&#39;;
+      
+      // Add glitch text in the center
+      const text = document.createElement(&#39;h1&#39;);
+      text.id = &#39;glitch-text&#39;;
+      text.style.position = &#39;absolute&#39;;
+      text.style.top = &#39;50%&#39;;
+      text.style.left = &#39;50%&#39;;
+      text.style.transform = &#39;translate(-50%, -50%)&#39;;
+      text.style.color = &#39;#FF0000&#39;;
+      text.style.fontSize = &#39;4em&#39;;
+      text.style.whiteSpace = &#39;nowrap&#39;;
+      text.style.textShadow = &#39;0 0 10px #FF0000&#39;;
+      text.textContent = &#39;FATAL ERROR&#39;;
+      
+      // Add it to the page
+      overlay.appendChild(text);
+      document.body.appendChild(overlay);
+      
+      // Try to play a glitch sound if needed (optional)
+      try {
+        const audio = new Audio();
+        audio.src = &quot;https://static.wixstatic.com/mp3/f3adad_ccdee5a2468f455bbac931fdd5c35023.wav&quot;; // Using a reliable free source
+        audio.volume = 0.5;
+        audio.play();
+      } catch (error) {
+        console.error(&quot;Audio couldn&#39;t play, continuing without sound&quot;);
+      }
+      
+      // Array of glitch messages
+      const glitchMessages = [
+        &#39;CONSUMED&#39;, 
+        &#39;SYSTEM FAILURE&#39;, 
+        &#39;FATAL ERROR&#39;, 
+        &#39;BREACH DETECTED&#39;, 
+        &#39;SHUTDOWN&#39;
+      ];
+      
+      // Simple glitch effects
+      function flashBackground() {
+        overlay.style.backgroundColor = `rgb(${Math.random()*255}, ${Math.random()*50}, ${Math.random()*100})`;
+        setTimeout(() =&gt; {
+          overlay.style.backgroundColor = &#39;#000033&#39;;
+        }, 100);
+      }
+      
+      function shakeText() {
+        text.style.transform = `translate(${-50 + (Math.random()*10-5)}%, ${-50 + (Math.random()*10-5)}%) skew(${Math.random()*10-5}deg)`;
+        text.style.color = Math.random() &gt; 0.5 ? &#39;#FF00FF&#39; : &#39;#00FFFF&#39;;
+        setTimeout(() =&gt; {
+          text.style.transform = &#39;translate(-50%, -50%)&#39;;
+          text.style.color = &#39;#FF0000&#39;;
+        }, 150);
+      }
+      
+      function changeMessage() {
+        text.textContent = glitchMessages[Math.floor(Math.random() * glitchMessages.length)];
+      }
+      
+      // Run effects at random intervals
+      const effects = [flashBackground, shakeText, changeMessage];
+      
+      let effectInterval = setInterval(() =&gt; {
+        // Run 1-3 random effects
+        const numEffects = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i &lt; numEffects; i++) {
+          const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+          randomEffect();
+        }
+      }, 150);
+      
+      // After 5 seconds, trigger the player death
+      setTimeout(() =&gt; {
+        clearInterval(effectInterval);
 
-&lt;&lt;run playerDied(&quot;FATAL ERROR: CONSUMED BY THE DARKNESS OF AZURE COVE&quot;)&gt;&gt;
-
-</tw-passagedata><tw-passagedata pid="29" name="floating rite" tags="" position="475,1775" size="100,100">I loaded up the last dinghy to begin our journey to the fingernail moon. 
+        if (typeof playerDied === &#39;function&#39;) {
+          playerDied(&quot;FATAL ERROR: CONSUMED BY THE DARKNESS OF AZURE COVE&quot;);
+        } else {
+          // Alternative method for SugarCube - this executes the macro directly
+          Engine.play(&quot;Death&quot;); // Assuming you have a passage named &quot;Death&quot;
+          // Or you could try:
+          // SugarCube.Macro.getValue(&quot;run playerDied(\&quot;FATAL ERROR\&quot;)&quot;);
+        }
+        
+        // Clean up our overlay after a short delay
+        setTimeout(() =&gt; {
+          if (document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+          }
+        }, 500);
+      }, 5000);
+    &lt;&lt;/script&gt;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="29" name="floating rite" tags="" position="475,1775" size="100,100">I loaded up the last dinghy to begin our journey to the fingernail moon. 
 
 A strange thought came to me. 
 
