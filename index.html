@@ -2292,7 +2292,25 @@ blockquote p {
     50% { color: #FFFFFF; text-shadow: 0 0 15px #FFFFFF, 0 0 20px #FFFFFF; transform: scale(1.1); }
 }
 
-</style><script role="script" id="twine-user-script" type="text/twine-javascript">// Global state management
+/* Add this to your Story stylesheet */
+@media screen and (max-width: 600px) {
+  /* Mobile-specific styles */
+  span[style*="font-size: 125%"] {
+    font-size: 100% !important; /* Adjust font size for better mobile reading */
+  }
+  
+  .passage {
+    margin: 0 auto;
+    max-width: 90%; /* Make passages take up most of the screen */
+  }
+  
+  /* Make buttons easier to tap */
+  .link-internal {
+    padding: 8px;
+    margin: 5px 0;
+    display: inline-block;
+  }
+}</style><script role="script" id="twine-user-script" type="text/twine-javascript">// Global state management
 const glitchState = {
   timers: [],
   hiddenElements: {},
@@ -2391,6 +2409,9 @@ function createTemporaryOverlay(styles, duration) {
   
   $('body').append(glitchElement);
   setTimeout(() => glitchElement.remove(), duration);
+  
+  // Return the element so it can be used by the caller
+  return glitchElement;
 }
 
 // Helper function to animate the story element
@@ -4427,7 +4448,7 @@ const DeathSystem = {
   playGlitchSound() {
     try {
       const audio = new Audio();
-      audio.src = "https://static.wixstatic.com/mp3/f3adad_9ee367356f6d486083459f5f6d7dfa91.wav";
+      audio.src = "https://static.wixstatic.com/mp3/f3adad_3e48270c4f8742b4a671c3de627e29a0.wav";
       audio.volume = 0.5;
       audio.play();
     } catch (error) {
@@ -4655,12 +4676,6 @@ const DeathSystem = {
     }, 20);
   }
 };
-
-// Initialize the death system
-$(document).ready(function() {
-  DeathSystem.init();
-});
-
 </script><tw-passagedata pid="1" name="Wanna learn about the South..?" tags="" position="1375,1850" size="100,100">Y’ever been Down South? Not like &lt;&lt;footnote &quot;South Florida &quot;&gt;&gt; NEVER, South Florida... yeah, there are definitely a lot of red voters... but that don&#39;t mean shit when the other majority is them &#39;BEEPOCK&#39; libtards... y&#39;know... immigrants from like Cuba, and those damn YANKEES...&lt;&lt;/footnote&gt;&gt; or even &lt;&lt;footnote &quot;Texas&quot;&gt;&gt;Too many hispanics&lt;&lt;/footnote&gt;&gt;… they ain’t the real South. We’re talking bout the Deep South—the Bible Belt, as some say! Mississippi, Alabama, Louisiana, and the Florida Panhandle. It can be a fun place, sometimes.
 
 &lt;&lt;corrupt&gt;&gt;&lt;span style=&quot;font-size: 110%;&quot;&gt;As long as your white, American (no immigrants), and don’t use no woke, wussy ass language like they do in Portland.&lt;/span&gt;&lt;&lt;/corrupt&gt;&gt;
@@ -5396,8 +5411,29 @@ As it shimmers in silence, [[the odd book]] starts to fade away.
 
 
 
-&lt;span style=&quot;font-size: 125%; display: block; text-align: center;&quot;&gt;
 &lt;&lt;link &quot;do not click me&quot;&gt;&gt;
+  &lt;&lt;script&gt;&gt;
+    // Create audio element if it doesn&#39;t exist
+    if (!window.mySound) {
+      window.mySound = new Audio(&quot;https://static.wixstatic.com/mp3/f3adad_6cc42d89ca304d2d8223beb199d0b9ee.wav&quot;); // Replace with your sound URL
+      window.mySound.volume = 0.5; // Set volume (0.0 to 1.0)
+    }
+    
+    // Calculate the new click count
+    const newClickCount = (State.variables.clickCounter ?? 0) + 1;
+    
+    // Only play sound every 4 clicks AND if we haven&#39;t reached the transition point
+    if (newClickCount % 4 === 0 &amp;&amp; newClickCount &lt; 12) {
+      window.mySound.play();
+    }
+    
+    // If we&#39;re transitioning to the next section, stop any playing sounds
+    if (newClickCount &gt;= 12) {
+      window.mySound.pause();
+      window.mySound.currentTime = 0;
+    }
+  &lt;&lt;/script&gt;&gt;
+  
   &lt;&lt;set $clickCounter to ($clickCounter ?? 0) + 1&gt;&gt;
   &lt;&lt;if $clickCounter eq 1&gt;&gt;
     &lt;&lt;replace &quot;#buttontext&quot;&gt;&gt;ok... sure...&lt;&lt;/replace&gt;&gt;
@@ -5425,8 +5461,7 @@ As it shimmers in silence, [[the odd book]] starts to fade away.
     &lt;&lt;goto &quot;do not click me&quot;&gt;&gt;
   &lt;&lt;/if&gt;&gt;
 &lt;&lt;/link&gt;&gt;
-&lt;span id=&quot;buttontext&quot;&gt;do not click me&lt;/span&gt;
-&lt;/span&gt;</tw-passagedata><tw-passagedata pid="20" name="Still too much reading..." tags="" position="1750,600" size="100,100">The same could be said of The Stacks. It was actually inspired by the Walled City to build itself, and it takes pride in its mysterious existence. The way people could go in and get lost for hours, unsure if they were going in circles, up or down, or sometimes... upside down and on the walls? Of course, existence itself is a figment of our imagination, and The Stacks could be too. But they are not - The Stacks eat people every day. And the crazy thing is, it learned how to make them, too, people. One of the tenants was a Christian and another was Islamic, and both had detailed enough explanations to allow Reality to manifest a human, out of dust. It did refine the process a bit more when a person would come in - it would take the time to send them off to the races. 
+&lt;span id=&quot;buttontext&quot;&gt;do not click me&lt;/span&gt;</tw-passagedata><tw-passagedata pid="20" name="Still too much reading..." tags="" position="1750,600" size="100,100">The same could be said of The Stacks. It was actually inspired by the Walled City to build itself, and it takes pride in its mysterious existence. The way people could go in and get lost for hours, unsure if they were going in circles, up or down, or sometimes... upside down and on the walls? Of course, existence itself is a figment of our imagination, and The Stacks could be too. But they are not - The Stacks eat people every day. And the crazy thing is, it learned how to make them, too, people. One of the tenants was a Christian and another was Islamic, and both had detailed enough explanations to allow Reality to manifest a human, out of dust. It did refine the process a bit more when a person would come in - it would take the time to send them off to the races. 
 
 Going off to the races was this daily dance that some, if not most, of the tenants did as a way for The Stacks to determine their qualities as humans. It would be done in random sections that could be considered blocks, except that the streets were corridors and the corridors went on for half a mile, if not more. People would be taken down long street-halls that changed about every 26 seconds, enough time for Lana to finish half a verse of the song. The one that inspired the event. People would go in and hear, &quot;My old man is a bad man, but I can&#39;t deny the way he holds my hand and he grabs me, he&#39;s got me by the heart. The people would leave and the rooms would turn into a hotel lobby. It had many rooms with strange symbols on them, and a single bell on an old countertop. In the distance you might hear someone say, &quot;Hello!!! Is this the Oceanview Motel?&quot; Before they peeled off, and before you entered the janitor&#39;s office. At least for those who sang... 
 
