@@ -1,4 +1,3 @@
-// Add this to your Story JavaScript section
 $(document).on(':passagestart', function() {
   // Set up random glitches with less frequent, more randomized timing
   setupRandomGlitches();
@@ -1286,10 +1285,8 @@ $(document).on(':passageend', function() {
   }, 200);
 });
 
-
-
-// Death Script with subtly distorted countdown
-window.playerDied = function(message, deathPassage = "Death", delaySeconds = 5) {
+// Death Script
+window.playerDied = function(message, deathPassage = "Death", delaySeconds = 8) {
   // Create a subtle visual indication that death is coming
   const warningOverlay = $('<div id="death-warning"></div>').css({
     'position': 'fixed',
@@ -1312,7 +1309,7 @@ window.playerDied = function(message, deathPassage = "Death", delaySeconds = 5) 
     warningOverlay.css('opacity', '1');
   }, 100);
   
-  // Show countdown with mildly distorted numbers
+  // Show countdown (optional)
   const countdown = $('<div id="death-countdown"></div>').css({
     'position': 'fixed',
     'top': '20px',
@@ -1329,34 +1326,13 @@ window.playerDied = function(message, deathPassage = "Death", delaySeconds = 5) 
   
   $('body').append(countdown);
   
-  // Array of slightly distorted number characters
-  const distortedNumbers = ['ꛬ', 'ꕫ', 'ꛌ', '𖨫', '𖨚'];
-  
-  // Update countdown each second with distorted numbers
+  // Update countdown each second
   let timeLeft = delaySeconds;
-  countdown.html('Terminal event in: ' + distortedNumbers[timeLeft - 1]);
+  countdown.text('Terminal event in: ' + timeLeft);
   
   let countdownInterval = setInterval(function() {
     timeLeft--;
-    
-    if (timeLeft > 0) {
-      // Add subtle glitch effects to the countdown
-      if (Math.random() < 0.3) {
-        countdown.css({
-          'transform': `translateX(${Math.random() * 2 - 1}px)`,
-          'text-shadow': `${Math.random() * 1 - 0.5}px 0 5px #FF0000`
-        });
-      } else {
-        countdown.css({
-          'transform': 'translateX(0)',
-          'text-shadow': '0 0 5px #FF0000'
-        });
-      }
-      
-      countdown.html('Terminal event in: ' + distortedNumbers[timeLeft - 1]);
-    } else {
-      countdown.html('Terminal event in: ERR');
-    }
+    countdown.text('Terminal event in: ' + timeLeft);
     
     // Increase the red tint as time passes
     warningOverlay.css('background-color', `rgba(255, 0, 0, ${0.05 + ((delaySeconds - timeLeft) / delaySeconds) * 0.1})`);
@@ -1442,7 +1418,37 @@ window.playerDied = function(message, deathPassage = "Death", delaySeconds = 5) 
     }, 3000);
   }, delaySeconds * 1000);
 };
-
+postrender['playBackgroundMusic'] = function (content) {
+  if (!window.bgMusicInitialized) {
+    try {
+      let audioElement = document.createElement('audio');
+      audioElement.src = 'https://static.wixstatic.com/mp3/f3adad_2ed8cf38f1da4da285ca07e05e3ca363.wav';
+      audioElement.id = 'bgMusic';
+      audioElement.loop = true;
+      
+      // Modern browsers require user interaction before audio can play
+      // This adds a play button that will appear at the start
+      let playButton = document.createElement('button');
+      playButton.textContent = 'Play Sound';
+      playButton.style.position = 'fixed';
+      playButton.style.top = '10px';
+      playButton.style.right = '10px';
+      playButton.style.zIndex = '1000';
+      
+      playButton.addEventListener('click', function() {
+        audioElement.play();
+        this.remove();
+      });
+      
+      document.body.appendChild(audioElement);
+      document.body.appendChild(playButton);
+      
+      window.bgMusicInitialized = true;
+    } catch (e) {
+      console.error("Audio initialization failed:", e);
+    }
+  }
+};
 
 // Diamond Effect for Zure
 $(document).on(':passagerender', function() {
@@ -2159,493 +2165,3 @@ Macro.add('death', {
     }, delay);
   }
 });
-
-// Death Statistics and Tracking System
-(function() {
-  // Initialize death tracking system when the game starts
-  $(document).on(':storystart', function() {
-    initDeathTracker();
-  });
-  
-  // Initialize or reset the death tracking system
-  function initDeathTracker() {
-    if (!State.variables.deathTracker) {
-      State.variables.deathTracker = {
-        totalDeaths: 0,
-        deathTypes: {},
-        lastDeath: null,
-        deathHistory: []
-      };
-    }
-  }
-  
-  // Enhanced player death function that integrates with your existing code
-  const originalPlayerDied = window.playerDied;
-  window.playerDied = function(message, deathType = "unknown", deathPassage = "Death", delaySeconds = 5) {
-    // Track this death before triggering the visual effects
-    trackDeath(deathType, message);
-    
-    // Call the original death function
-    if (typeof originalPlayerDied === 'function') {
-      originalPlayerDied(message, deathPassage, delaySeconds);
-    } else {
-      console.error("Original playerDied function not found!");
-    }
-  };
-  
-  // Function to track deaths by type and maintain history
-  function trackDeath(deathType, message) {
-    if (!State.variables.deathTracker) {
-      initDeathTracker();
-    }
-    
-    // Increment total death counter
-    State.variables.deathTracker.totalDeaths++;
-    
-    // Record death type
-    if (!State.variables.deathTracker.deathTypes[deathType]) {
-      State.variables.deathTracker.deathTypes[deathType] = 1;
-    } else {
-      State.variables.deathTracker.deathTypes[deathType]++;
-    }
-    
-    // Record details of this death
-    const deathRecord = {
-      type: deathType,
-      message: message || "SYSTEM FAILURE: REALITY ANCHOR LOST",
-      location: State.passage,
-      timestamp: new Date().toISOString()
-    };
-    
-    // Update last death and history
-    State.variables.deathTracker.lastDeath = deathRecord;
-    State.variables.deathTracker.deathHistory.push(deathRecord);
-    
-    console.log(`Death recorded: ${deathType} at ${State.passage}`);
-  }
-  
-  // Add a death counter button to the UI
-  $(document).on(':passagerender', function() {
-    // Ensure we have death tracking initialized
-    if (!State.variables.deathTracker) {
-      initDeathTracker();
-    }
-    
-    // Add death counter button if it doesn't exist
-    setTimeout(function() {
-      addDeathCounterButton();
-    }, 500);
-  });
-  
-  // Add the death counter button
-  function addDeathCounterButton() {
-    if ($('#death-counter-button').length === 0) {
-      const deathCount = State.variables.deathTracker.totalDeaths;
-      
-      let deathButton = $('<div id="death-counter-button"></div>').css({
-        'position': 'fixed',
-        'bottom': '150px',
-        'left': '20px',
-        'background-color': '#FF0033',
-        'color': '#000033',
-        'padding': '8px 15px',
-        'border': '2px solid #FF00FF',
-        'border-radius': '5px',
-        'font-family': 'Courier New, monospace',
-        'font-weight': 'bold',
-        'cursor': 'pointer',
-        'z-index': '1000',
-        'box-shadow': '0 0 10px #FF0033',
-        'transition': 'all 0.3s ease',
-        'display': 'flex',
-        'align-items': 'center',
-        'justify-content': 'center'
-      });
-      
-      // Style based on death count
-      if (deathCount > 5) {
-        deathButton.css({
-          'background-color': '#900',
-          'box-shadow': '0 0 15px #F00',
-        });
-      }
-      
-      // Create death icon
-      const deathIcon = $('<span></span>').css({
-        'margin-right': '8px',
-        'font-size': '16px'
-      }).text('☠');
-      
-      // Create death counter
-      const deathCounter = $('<span></span>').css({
-        'font-size': '16px'
-      }).text(deathCount);
-      
-      // Add hover effect
-      deathButton.hover(
-        function() {
-          $(this).css({
-            'background-color': '#FF00FF',
-            'color': '#000033',
-            'box-shadow': '0 0 15px #FF00FF'
-          });
-        },
-        function() {
-          $(this).css({
-            'background-color': deathCount > 5 ? '#900' : '#FF0033',
-            'color': '#000033',
-            'box-shadow': deathCount > 5 ? '0 0 15px #F00' : '0 0 10px #FF0033'
-          });
-        }
-      );
-      
-      // Add click event to show death statistics
-      deathButton.click(function() {
-        showDeathStatistics();
-      });
-      
-      // Add components to button and button to page
-      deathButton.append(deathIcon).append(deathCounter);
-      $('body').append(deathButton);
-      
-      // Add glitchy effect to the button if player has died many times
-      if (deathCount > 10) {
-        animateGlitchyButton(deathButton);
-      }
-    }
-  }
-  
-  // Function to add glitchy animation to the death counter button
-  function animateGlitchyButton(button) {
-    // Random glitch effect at intervals
-    setInterval(function() {
-      if (Math.random() < 0.2) { // 20% chance of glitching
-        const offsetX = Math.floor(Math.random() * 4) - 2;
-        const offsetY = Math.floor(Math.random() * 4) - 2;
-        
-        button.css({
-          'transform': `translate(${offsetX}px, ${offsetY}px)`,
-          'text-shadow': `${offsetX}px ${offsetY}px 2px rgba(255, 0, 0, 0.7)`
-        });
-        
-        setTimeout(function() {
-          button.css({
-            'transform': 'translate(0, 0)',
-            'text-shadow': 'none'
-          });
-        }, 100);
-      }
-    }, 3000);
-  }
-  
-  // Show death statistics panel
-  function showDeathStatistics() {
-    // Create backdrop
-    const backdrop = $('<div id="death-stats-backdrop"></div>').css({
-      'position': 'fixed',
-      'top': '0',
-      'left': '0',
-      'width': '100%',
-      'height': '100%',
-      'background-color': 'rgba(10, 0, 20, 0.85)',
-      'z-index': '9999',
-      'display': 'flex',
-      'justify-content': 'center',
-      'align-items': 'center',
-      'opacity': '0',
-      'transition': 'opacity 0.3s'
-    });
-    
-    // Create panel
-    const panel = $('<div id="death-stats-panel"></div>').css({
-      'background-color': '#000033',
-      'border': '3px solid #FF0033',
-      'box-shadow': '0 0 20px #FF0033',
-      'width': '80%',
-      'max-width': '600px',
-      'max-height': '80%',
-      'overflow-y': 'auto',
-      'padding': '20px',
-      'color': '#FF3333',
-      'font-family': 'Courier New, monospace',
-      'transform': 'scale(0.9)',
-      'transition': 'transform 0.3s',
-      'position': 'relative'
-    });
-    
-    // Add scanlines effect
-    const scanlines = $('<div class="scanlines"></div>').css({
-      'position': 'absolute',
-      'top': '0',
-      'left': '0',
-      'right': '0',
-      'bottom': '0',
-      'background': 'repeating-linear-gradient(0deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.1) 1px, transparent 1px, transparent 2px)',
-      'pointer-events': 'none',
-      'z-index': '1'
-    });
-    
-    // Add noise effect
-    const noise = $('<div class="noise"></div>').css({
-      'position': 'absolute',
-      'top': '0',
-      'left': '0',
-      'right': '0',
-      'bottom': '0',
-      'background-image': 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.05\'/%3E%3C/svg%3E")',
-      'opacity': '0.2',
-      'pointer-events': 'none',
-      'z-index': '2'
-    });
-    
-    // Create header
-    const headerHtml = `
-      <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #FF0033; padding-bottom: 10px; position: relative; z-index: 3;">
-        <h2 style="color: #FF0033; margin: 0; font-family: monospace; text-shadow: 0 0 5px #FF0033;">TERMINAL EVENT LOG</h2>
-        <div style="color: #FF9999; margin-top: 5px; font-size: 14px;">
-          SUBJECT DESTRUCTION COUNT: ${State.variables.deathTracker.totalDeaths}
-        </div>
-      </div>
-    `;
-    
-    // Create death types section
-    let deathTypesHtml = `
-      <div style="margin-bottom: 20px; position: relative; z-index: 3;">
-        <h3 style="color: #FF5555; border-bottom: 1px solid #FF5555; padding-bottom: 5px; margin-bottom: 10px;">TERMINATION CLASSIFICATIONS</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-    `;
-    
-    // Add each death type
-    const deathTypes = State.variables.deathTracker.deathTypes;
-    for (const type in deathTypes) {
-      const count = deathTypes[type];
-      const displayType = type.charAt(0).toUpperCase() + type.slice(1);
-      
-      deathTypesHtml += `
-        <div style="background-color: rgba(255, 0, 0, 0.1); padding: 10px; border-radius: 5px; border-left: 3px solid #FF0033;">
-          <div style="font-weight: bold; color: #FF9999;">${displayType}</div>
-          <div style="font-size: 24px; color: #FF5555;">${count}</div>
-        </div>
-      `;
-    }
-    
-    deathTypesHtml += `</div></div>`;
-    
-    // Create recent deaths section
-    let recentDeathsHtml = `
-      <div style="margin-bottom: 20px; position: relative; z-index: 3;">
-        <h3 style="color: #FF5555; border-bottom: 1px solid #FF5555; padding-bottom: 5px; margin-bottom: 10px;">RECENT TERMINATION EVENTS</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-    `;
-    
-    // Show last 5 deaths, most recent first
-    const recentDeaths = [...State.variables.deathTracker.deathHistory].reverse().slice(0, 5);
-    
-    if (recentDeaths.length > 0) {
-      recentDeaths.forEach((death, index) => {
-        // Format the location and time
-        const location = death.location || "UNKNOWN SECTOR";
-        const displayTime = formatTimeSince(death.timestamp);
-        
-        recentDeathsHtml += `
-          <div style="background-color: rgba(255, 0, 0, 0.1); padding: 10px; border-radius: 5px; border-left: 3px solid #FF0033; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <div style="font-weight: bold; color: #FF6666; margin-bottom: 4px;">${death.type.toUpperCase()} FAILURE</div>
-              <div style="font-size: 12px; color: #FF9999; margin-bottom: 4px;">Location: ${location}</div>
-              <div style="font-size: 12px; color: #FF9999;">"${limitString(death.message, 40)}"</div>
-            </div>
-            <div style="font-size: 12px; color: #FF6666; text-align: right; font-style: italic;">
-              ${displayTime}
-            </div>
-          </div>
-        `;
-      });
-    } else {
-      recentDeathsHtml += `
-        <div style="text-align: center; padding: 20px; color: #FF9999; font-style: italic;">
-          No termination events recorded
-        </div>
-      `;
-    }
-    
-    recentDeathsHtml += `</div></div>`;
-    
-    // Create death insights section - add some flavor text based on death patterns
-    let insightsHtml = `
-      <div style="margin-bottom: 20px; position: relative; z-index: 3;">
-        <h3 style="color: #FF5555; border-bottom: 1px solid #FF5555; padding-bottom: 5px; margin-bottom: 10px;">SYSTEM ANALYSIS</h3>
-        <div style="background-color: rgba(255, 0, 0, 0.1); padding: 15px; border-radius: 5px; color: #FF9999; font-style: italic;">
-    `;
-    
-    // Generate insights based on death patterns
-    const totalDeaths = State.variables.deathTracker.totalDeaths;
-    let insightText = "";
-    
-    if (totalDeaths === 0) {
-      insightText = "No terminal events detected. Reality anchor remains stable.";
-    } else if (totalDeaths === 1) {
-      insightText = "Initial termination recorded. Subject has entered the cycle.";
-    } else if (totalDeaths < 5) {
-      insightText = "Multiple termination events detected. Subject shows persistence despite dimensional instability.";
-    } else if (totalDeaths < 10) {
-      insightText = "Subject exhibits unusual resilience to terminal events. Possible quantum entanglement detected.";
-    } else {
-      insightText = "WARNING: Critical threshold exceeded. Subject has become untethered from conventional reality constraints.";
-      
-      // Add glitchy blinking effect to this message for high death counts
-      insightsHtml = insightsHtml.replace('<div style="background-color', '<div class="glitch-text" style="background-color');
-    }
-    
-    insightsHtml += insightText + `</div></div>`;
-    
-    // Create close button
-    const closeButton = $('<div id="close-death-stats"></div>').css({
-      'position': 'absolute',
-      'top': '10px',
-      'right': '10px',
-      'color': '#FF0033',
-      'font-size': '24px',
-      'cursor': 'pointer',
-      'width': '30px',
-      'height': '30px',
-      'display': 'flex',
-      'justify-content': 'center',
-      'align-items': 'center',
-      'border': '2px solid #FF0033',
-      'border-radius': '50%',
-      'transition': 'all 0.3s',
-      'z-index': '5'
-    }).text('×');
-    
-    closeButton.hover(
-      function() {
-        $(this).css({
-          'background-color': '#FF0033',
-          'color': '#000033'
-        });
-      },
-      function() {
-        $(this).css({
-          'background-color': 'transparent',
-          'color': '#FF0033'
-        });
-      }
-    );
-    
-    closeButton.click(function() {
-      panel.css('transform', 'scale(0.9)');
-      backdrop.css('opacity', '0');
-      
-      setTimeout(() => {
-        backdrop.remove();
-      }, 300);
-    });
-    
-    // Assemble and show the panel
-    panel.html(headerHtml + deathTypesHtml + recentDeathsHtml + insightsHtml);
-    panel.append(scanlines);
-    panel.append(noise);
-    panel.append(closeButton);
-    backdrop.append(panel);
-    
-    $('body').append(backdrop);
-    
-    // Add CSS animation for glitchy text if needed
-    if (totalDeaths >= 10) {
-      $("<style>")
-        .prop("type", "text/css")
-        .html(`
-          .glitch-text {
-            animation: text-glitch 2s infinite;
-          }
-          @keyframes text-glitch {
-            0%, 95%, 100% { opacity: 1; }
-            95.5%, 96.5% { opacity: 0.3; }
-            96%, 97% { opacity: 1; }
-          }
-        `)
-        .appendTo("head");
-    }
-    
-    // Animate the panel in
-    setTimeout(() => {
-      backdrop.css('opacity', '1');
-      panel.css('transform', 'scale(1)');
-      
-      // Add occasional glitch effect to the panel for higher death counts
-      if (totalDeaths > 5) {
-        setInterval(() => {
-          if (Math.random() < 0.2) {
-            const offsetX = Math.random() * 3 - 1.5;
-            const offsetY = Math.random() * 3 - 1.5;
-            panel.css('transform', `scale(1) translate(${offsetX}px, ${offsetY}px)`);
-            
-            setTimeout(() => {
-              panel.css('transform', 'scale(1)');
-            }, 100);
-          }
-        }, 2000);
-      }
-    }, 10);
-  }
-  
-  // Utility function to limit string length with ellipsis
-  function limitString(str, maxLength) {
-    if (!str) return "";
-    return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
-  }
-  
-  // Format a timestamp as a relative time string
-  function formatTimeSince(timestamp) {
-    if (!timestamp) return "Unknown";
-    
-    const now = new Date();
-    const then = new Date(timestamp);
-    const diffMs = now - then;
-    
-    // Convert to seconds
-    const diffSec = Math.round(diffMs / 1000);
-    
-    if (diffSec < 60) return `${diffSec} seconds ago`;
-    
-    // Convert to minutes
-    const diffMin = Math.round(diffSec / 60);
-    if (diffMin < 60) return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
-    
-    // Convert to hours
-    const diffHour = Math.round(diffMin / 60);
-    if (diffHour < 24) return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
-    
-    // Convert to days
-    const diffDay = Math.round(diffHour / 24);
-    return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
-  }
-  
-  // Update the death counter UI when it changes
-  $(document).on(':passagestart', function() {
-    // Wait a moment for the DOM to be ready
-    setTimeout(function() {
-      const deathCounterEl = $('#death-counter-button span:last-child');
-      if (deathCounterEl.length > 0) {
-        deathCounterEl.text(State.variables.deathTracker.totalDeaths);
-      }
-    }, 500);
-  });
-  
-  // Enhanced death type tracking - these are example presets you can use
-  window.deathTypes = {
-    REALITY_BREACH: "reality_breach",
-    ENTITY_CONSUMED: "entity_consumed", 
-    TEMPORAL_PARADOX: "temporal_paradox",
-    EXISTENTIAL_ERROR: "existential_error",
-    VOID_COLLAPSE: "void_collapse",
-    STACK_OVERFLOW: "stack_overflow",
-    MEMORY_CORRUPTION: "memory_corruption"
-  };
-  
-  // Quick function to trigger specific death types
-  window.dieBy = function(type, message) {
-    window.playerDied(message, type);
-  };
-
-})();
