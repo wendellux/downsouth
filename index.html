@@ -2441,6 +2441,64 @@ span.story-choice-title {
     padding: 0 10px;
     font-size: 14px;
     font-family: 'Courier New', monospace;
+}
+
+/* Night mode styles */
+body.night-mode {
+  background-color: #000022 !important;
+}
+
+body.night-mode #story {
+  box-shadow: 0 0 30px #00004d !important;
+}
+
+body.night-mode .passage {
+  background-color: #000011 !important;
+}
+
+/* Memory echo hover effect */
+.memory-location {
+  color: #FF00FF;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.memory-location:hover {
+  color: #00FFFF;
+  text-shadow: 0 0 10px #00FFFF;
+}
+
+/* Fourth wall break styling */
+.fourth-wall-break {
+  font-family: 'Courier New', monospace;
+  border-radius: 3px;
+  box-shadow: 0 0 10px #FF0000;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 10px #FF0000; }
+  50% { box-shadow: 0 0 20px #FF0000; }
+}
+
+/* False notification styling */
+.false-notification {
+  font-family: 'Courier New', monospace;
+  border-radius: 3px;
+  animation: notification-glow 2s infinite alternate;
+}
+
+@keyframes notification-glow {
+  0% { box-shadow: 0 0 5px #00FFFF; }
+  100% { box-shadow: 0 0 15px #FF00FF; }
+}
+
+/* Add no-distort class to paragraphs you want to protect from distortion */
+.no-distort {
+  filter: none !important;
+  transform: none !important;
+  text-shadow: none !important;
 }</style><script role="script" id="twine-user-script" type="text/twine-javascript">// Global state management
 const glitchState = {
   timers: [],
@@ -3981,6 +4039,457 @@ $(document).ready(function() {
   TwineEffects.init();
 });
 
+// Add these methods to your existing TwineEffects object
+// Place this right after the TwineEffects declaration
+
+// Add to your existing TwineEffects init function
+$(document).ready(function() {
+  // Keep your existing TwineEffects.init() call
+  
+  // Add the new initialization
+  TwineEffects.setupFourthWallBreaks();
+  TwineEffects.addTimeAwareness();
+  TwineEffects.setupMemorySystem();
+  
+  // Set up periodic checks
+  setInterval(() => {
+    if (Math.random() < 0.1) {
+      TwineEffects.createFalseNotifications();
+    }
+  }, 60000);
+});
+
+// Add these new methods to your existing TwineEffects object
+TwineEffects.setupFourthWallBreaks = function() {
+  $(document).on(':passagerender', function() {
+    // Randomly select a link occasionally to be "aware"
+    setTimeout(() => {
+      const links = document.querySelectorAll('.passage a');
+      
+      if (links.length > 0 && Math.random() < 0.2) { // 20% chance
+        const randomLink = links[Math.floor(Math.random() * links.length)];
+        
+        // Replace normal click with a dialogue
+        randomLink.addEventListener('click', function(e) {
+          // Check if we've already warned
+          if (this.dataset.warned === 'true') return;
+          
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const responses = [
+            "Are you sure you want to go there? It's dangerous...",
+            "I wouldn't click that if I were you.",
+            "That path leads to something you're not ready for.",
+            "I'm supposed to take you there, but I don't think I should.",
+            "THEY are waiting for you there. Click again if you're certain."
+          ];
+          
+          const response = responses[Math.floor(Math.random() * responses.length)];
+          
+          // Create dialogue
+          const dialogue = document.createElement('div');
+          dialogue.textContent = response;
+          dialogue.className = 'fourth-wall-break';
+          Object.assign(dialogue.style, {
+            position: 'absolute',
+            top: `${e.clientY + 20}px`,
+            left: `${e.clientX + 20}px`,
+            backgroundColor: 'black',
+            color: '#FF0000',
+            padding: '10px',
+            border: '1px solid red',
+            zIndex: 9999
+          });
+          
+          document.body.appendChild(dialogue);
+          
+          // Allow click through on second attempt
+          this.dataset.warned = true;
+          
+          setTimeout(() => dialogue.remove(), 4000);
+          
+          // Add click handler for second attempt
+          this.addEventListener('click', function(e) {
+            // Continue with default behavior
+          }, { once: true });
+        }, { once: true });
+      }
+    }, 500); // Delay to ensure links are rendered
+  });
+};
+
+TwineEffects.addTimeAwareness = function() {
+  $(document).on(':passagerender', function() {
+    // Get current hour
+    const hour = new Date().getHours();
+    const isNight = hour < 6 || hour >= 20;
+    
+    // Change theme based on time
+    if (isNight) {
+      // Night theme - even darker, more glitchy
+      document.body.classList.add('night-mode');
+      
+      // Add a message about reading at night
+      if (Math.random() < 0.2) { // 20% chance
+        const message = document.createElement('div');
+        message.textContent = "Reading about Azure Cove at night? Brave...";
+        message.style.position = 'fixed';
+        message.style.bottom = '20px';
+        message.style.right = '20px';
+        message.style.color = '#FF0000';
+        message.style.opacity = '0';
+        message.style.transition = 'opacity 2s';
+        document.body.appendChild(message);
+        
+        setTimeout(() => message.style.opacity = '1', 100);
+        setTimeout(() => {
+          message.style.opacity = '0';
+          setTimeout(() => message.remove(), 2000);
+        }, 5000);
+      }
+    }
+  });
+};
+
+TwineEffects.setupMemorySystem = function() {
+  $(document).on(':passagerender', function() {
+    // Track key decisions or visited passages
+    if (!State.variables.visitedLocations) {
+      State.variables.visitedLocations = [];
+    }
+    
+    // Store current passage
+    if (State.variables.visitedLocations.indexOf(State.passage) === -1) {
+      State.variables.visitedLocations.push(State.passage);
+    }
+    
+    // Limit to last 10
+    if (State.variables.visitedLocations.length > 10) {
+      State.variables.visitedLocations.shift();
+    }
+    
+    // Random chance to reference a past location
+    if (Math.random() < 0.15 && State.variables.visitedLocations.length > 2) {
+      const recentLocations = State.variables.visitedLocations.slice(0, -1); // Exclude current location
+      if (recentLocations.length > 0) {
+        const pastLocation = recentLocations[Math.floor(Math.random() * recentLocations.length)];
+        
+        // Create a haunting callback to that location
+        const memory = document.createElement('div');
+        memory.innerHTML = `Do you remember when you visited <span class="memory-location">${pastLocation}</span>? Something followed you from there...`;
+        memory.className = 'memory-echo';
+        Object.assign(memory.style, {
+          position: 'fixed',
+          bottom: '50px',
+          right: '-300px',
+          width: '250px',
+          padding: '10px',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          color: '#FF00FF',
+          borderLeft: '3px solid #FF00FF',
+          transition: 'right 1s cubic-bezier(0.23, 1, 0.32, 1)',
+          fontFamily: 'monospace',
+          zIndex: '9000'
+        });
+        
+        document.body.appendChild(memory);
+        
+        // Animate in
+        setTimeout(() => memory.style.right = '0', 100);
+        
+        // Animate out
+        setTimeout(() => {
+          memory.style.right = '-300px';
+          setTimeout(() => memory.remove(), 1000);
+        }, 6000);
+      }
+    }
+  });
+};
+
+TwineEffects.addFalseLoadingMoments = function() {
+  // Create overlay
+  const overlay = document.createElement('div');
+  Object.assign(overlay.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    zIndex: '999999',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: 'monospace'
+  });
+  
+  // Loading text
+  const text = document.createElement('div');
+  text.textContent = 'RECALIBRATING REALITY PARAMETERS...';
+  text.style.color = '#00FF00';
+  text.style.marginBottom = '20px';
+  
+  // Progress bar
+  const progress = document.createElement('div');
+  progress.style.width = '300px';
+  progress.style.height = '20px';
+  progress.style.border = '1px solid #00FF00';
+  progress.style.position = 'relative';
+  
+  const bar = document.createElement('div');
+  bar.style.height = '100%';
+  bar.style.width = '0%';
+  bar.style.backgroundColor = '#00FF00';
+  bar.style.transition = 'width 3s';
+  
+  progress.appendChild(bar);
+  overlay.appendChild(text);
+  overlay.appendChild(progress);
+  document.body.appendChild(overlay);
+  
+  // Animate progress
+  setTimeout(() => bar.style.width = '100%', 100);
+  
+  // Remove overlay after "loading"
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.5s';
+    setTimeout(() => overlay.remove(), 500);
+  }, 3500);
+};
+
+TwineEffects.createProgressiveTextDistortion = function() {
+  // Increment a counter in State variables
+  if (!State.variables.passageCount) {
+    State.variables.passageCount = 0;
+  }
+  State.variables.passageCount++;
+  
+  // Increase distortion based on progress
+  const intensity = Math.min(0.5, State.variables.passageCount * 0.01);
+  
+  // Apply to specific elements
+  const paragraphs = document.querySelectorAll('.passage p');
+  paragraphs.forEach(p => {
+    // Skip paragraphs with special classes
+    if (p.classList.contains('no-distort')) return;
+    
+    // Apply subtle filter based on progression
+    p.style.filter = `blur(${intensity * 0.5}px) hue-rotate(${intensity * 30}deg)`;
+    
+    // Random chance for more extreme distortion
+    if (Math.random() < intensity * 0.2) {
+      p.style.transform = `skew(${Math.random() * 5 - 2.5}deg, ${Math.random() * 5 - 2.5}deg)`;
+      p.style.textShadow = `${Math.random() * 4 - 2}px ${Math.random() * 4 - 2}px #FF00FF`;
+    }
+  });
+};
+
+TwineEffects.createFalseNotifications = function() {
+  const notifications = [
+    "INCOMING TRANSMISSION FROM AZURE COVE",
+    "DIMENSIONAL BREACH DETECTED",
+    "MEMORY CORRUPTION AT SECTOR 7G",
+    "DO NOT LOOK BEHIND YOU",
+    "THEY ARE WATCHING YOU READ THIS"
+  ];
+  
+  const notification = document.createElement('div');
+  notification.className = 'false-notification';
+  notification.textContent = notifications[Math.floor(Math.random() * notifications.length)];
+  
+  // Style the notification
+  Object.assign(notification.style, {
+    position: 'fixed',
+    bottom: `${Math.random() * 80}%`,
+    left: `${Math.random() * 70}%`,
+    backgroundColor: '#000033',
+    color: '#FF00FF',
+    padding: '10px',
+    border: '1px solid #00FFFF',
+    boxShadow: '0 0 10px #00FFFF',
+    zIndex: '9999',
+    opacity: '0',
+    transition: 'opacity 0.5s'
+  });
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => notification.style.opacity = '1', 100);
+  
+  // Animate out and remove
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 500);
+  }, 3000);
+};
+
+TwineEffects.addVisualCorruption = function() {
+  const effect = Math.floor(Math.random() * 5);
+  
+  switch(effect) {
+    case 0:
+      // Shift entire passage container
+      $('#passage').css({
+        'transform': `skew(${Math.random() * 10 - 5}deg, ${Math.random() * 5 - 2.5}deg)`,
+        'transition': 'transform 0.2s'
+      });
+      
+      setTimeout(() => {
+        $('#passage').css({
+          'transform': 'skew(0deg, 0deg)',
+          'transition': 'transform 1s'
+        });
+      }, 500);
+      break;
+      
+    case 1:
+      // Create screen tearing effect
+      const tear = document.createElement('div');
+      const tearHeight = Math.floor(Math.random() * 10) + 5;
+      const tearPos = Math.floor(Math.random() * 80) + 10;
+      
+      Object.assign(tear.style, {
+        position: 'fixed',
+        left: '0',
+        top: `${tearPos}%`,
+        width: '100%',
+        height: `${tearHeight}px`,
+        backgroundColor: 'black',
+        zIndex: '9999',
+        opacity: '0.7'
+      });
+      
+      document.body.appendChild(tear);
+      
+      // Move tear
+      setTimeout(() => {
+        tear.style.top = `${tearPos + (Math.random() * 20 - 10)}%`;
+        tear.style.transition = 'top 0.1s';
+        
+        setTimeout(() => tear.remove(), 200);
+      }, 100);
+      break;
+      
+    case 2:
+      // Create CRT flicker
+      const flicker = document.createElement('div');
+      Object.assign(flicker.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        zIndex: '9998',
+        pointerEvents: 'none'
+      });
+      
+      document.body.appendChild(flicker);
+      
+      setTimeout(() => flicker.remove(), 50);
+      break;
+      
+    case 3:
+      // Invert colors temporarily
+      document.body.style.filter = 'invert(100%)';
+      
+      setTimeout(() => {
+        document.body.style.filter = 'none';
+      }, 200);
+      break;
+      
+    case 4:
+      // Show fake error message
+      const error = document.createElement('div');
+      const errors = [
+        "ERROR: REALITY BUFFER OVERFLOW",
+        "SYSTEM FAILURE: UNABLE TO MAINTAIN COHERENT NARRATIVE",
+        "WARNING: DIMENSIONAL BREACH DETECTED",
+        "CRITICAL: MEMORY CORRUPTION IN SECTOR 7G",
+        "ALERT: CHARACTER ESCAPE ATTEMPT DETECTED"
+      ];
+      
+      error.textContent = errors[Math.floor(Math.random() * errors.length)];
+      Object.assign(error.style, {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: 'blue',
+        color: 'white',
+        padding: '20px',
+        fontFamily: 'monospace',
+        border: '2px solid white',
+        zIndex: '9999'
+      });
+      
+      document.body.appendChild(error);
+      
+      setTimeout(() => error.remove(), 2000);
+      break;
+  }
+};
+
+// Add this to your JavaScript section or to the TwineEffects object
+window.fixClickIssues = function() {
+  // First, identify all clickable elements
+  const clickableElements = document.querySelectorAll('a, .link-internal, .link, .macro-link, [role="link"], [onclick]');
+  
+  // Re-attach click handlers
+  clickableElements.forEach(element => {
+    // Clone the node to remove existing event handlers
+    const clone = element.cloneNode(true);
+    
+    // Copy all event listeners from the original (if any)
+    if (element.onclick) {
+      clone.onclick = element.onclick;
+    }
+    
+    // Replace the original with the clone
+    if (element.parentNode) {
+      element.parentNode.replaceChild(clone, element);
+    }
+  });
+  
+  console.log("Click handlers refreshed");
+};
+
+// Automatically refresh click handlers periodically
+setInterval(window.fixClickIssues, 30000); // Every 30 seconds
+
+// Also refresh on user activity after a period of inactivity
+let inactivityTimer;
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    window.fixClickIssues();
+  }, 60000); // After 1 minute of inactivity
+}
+
+// Add activity listeners
+document.addEventListener('mousemove', resetInactivityTimer);
+document.addEventListener('keydown', resetInactivityTimer);
+document.addEventListener('click', resetInactivityTimer);
+
+// Start the timer
+resetInactivityTimer();
+
+// Add new functions to expose to Twine
+window.triggerFalseLoading = function() {
+  TwineEffects.addFalseLoadingMoments();
+};
+
+window.triggerVisualCorruption = function() {
+  TwineEffects.addVisualCorruption();
+};
+
+
+
 // =========================================
 // OPTIMIZED TWINE MACROS AND UI COMPONENTS
 // =========================================
@@ -4955,7 +5464,7 @@ The truth is there, he&#39;s very close. He can almost taste it. Some of it, if 
 
 [[Dick ponders]]
 [[Dick freaks, and so Chuck freaks]]
-[[The boys jump]]</tw-passagedata><tw-passagedata pid="19" name="Start" tags="" position="1300,900" size="200,200">&lt;div style=&quot;max-width: 800px; margin: 0 auto 20px auto;&quot;&gt;
+[[The boys jump]]</tw-passagedata><tw-passagedata pid="19" name="Start" tags="" position="1300,925" size="200,200">&lt;div style=&quot;max-width: 800px; margin: 0 auto 20px auto;&quot;&gt;
 &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 800 400&quot;&gt;
   &lt;!-- Dark background with texture --&gt;
   &lt;defs&gt;
@@ -5035,13 +5544,45 @@ The original colonizers were certain the edge of the world would spell the end, 
 What brings &lt;span class=&quot;grow-text&quot; style=&quot;font-size: 250%;&quot;&gt;you&lt;/span&gt; here?
 
 &lt;div class=&quot;story-choice-container&quot;&gt;
-&lt;span class=&quot;story-choice-title&quot;&gt;CHOOSE YOUR PATH&lt;/span&gt;[[Wanna learn about the South..?]]
+&lt;span class=&quot;story-choice-title&quot;&gt;CHOOSE YOUR PATH&lt;/span&gt;
+[[Wanna learn about the South..?]]
 [[What&#39;s happenin&#39; at the Priory?]]
 [[Who are the Moonlighter&#39;s?|Find the Moonlighters]]
 [[Enter, the Stacks]]
-[[A look at history]]
-[[Steal a car]]
+[[A look at their history]]
+&lt;span class=&quot;evasive-link&quot;&gt;[[Steal a car]]&lt;/span&gt;
 &lt;/div&gt;
+
+&lt;&lt;script&gt;&gt;
+// Wait for the passage to render completely
+setTimeout(() =&gt; {
+  // Find the evasive link element
+  const evasiveLinks = document.querySelectorAll(&#39;.evasive-link a&#39;);
+  
+  evasiveLinks.forEach(link =&gt; {
+    // Add some styling to make it stand out
+    link.style.color = &#39;#FF00FF&#39;;
+    link.style.transition = &#39;all 0.1s&#39;;
+    
+    // Add evasive behavior on mouseover
+    link.addEventListener(&#39;mouseover&#39;, function(e) {
+      // Calculate a random position to move to
+      const moveX = (Math.random() * 200) - 100; // -100 to 100px
+      const moveY = (Math.random() * 100) - 50;  // -50 to 50px
+      
+      // Move the link
+      this.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      
+      // Optional: make it harder to click by making it return if player moves away
+      this.addEventListener(&#39;mouseout&#39;, function() {
+        setTimeout(() =&gt; {
+          this.style.transform = &#39;translate(0, 0)&#39;;
+        }, 500);
+      }, { once: true });
+    });
+  });
+}, 100);
+&lt;&lt;/script&gt;&gt;
 
 
 
@@ -6002,7 +6543,11 @@ But she had not lost all of her power.  She trapped all the cultists in a bubble
 Soon, the entire cult would be gone. 
 
 [[next|p12.history]]
-</tw-passagedata><tw-passagedata pid="51" name="running death scene" tags="" position="825,250" size="100,100"></tw-passagedata><tw-passagedata pid="52" name="p12.history" tags="" position="825,125" size="100,100">Soon, a group of Roman Catholics would arrive in the profaned village, having started a dramatic battle that the Holywildists were completely unaware of. And call it so. And lock it up and damn it. 
+</tw-passagedata><tw-passagedata pid="51" name="running death scene" tags="" position="825,250" size="100,100">The manifestee was taken by surprise, and began running away from the scene unfolding before them...
+
+&lt;&lt;timed 7s&gt;&gt;
+  &lt;&lt;run playerDeath(&quot;WHAT IF YOU HADN&#39;T RAN?!?!&quot;, &quot;temporal_paradox&quot;)&gt;&gt;
+&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="p12.history" tags="" position="825,125" size="100,100">Soon, a group of Roman Catholics would arrive in the profaned village, having started a dramatic battle that the Holywildists were completely unaware of. And call it so. And lock it up and damn it. 
 
 Soon a whole new era will begin, an era of magic and gods and aliens and extremist religions and racism. But first, the Catholics have to make all that go away, and make all of what people these had begun calling Azure Cove into something not so... Satanic? They weren&#39;t sure what to call it. They knew the best way to erase the history is start a city. The new dilemma was a name for the town… a voice… someone way in the back of the crowds that had gathered round the mob… in a black trench coat, and a large black hat, rimmed with crystals, said in a ringing &lt;span onclick=&quot;window.showZureDiamond()&quot; style=&quot;color: #FFD700; text-shadow: 0 0 5px #FFD700, 0 0 10px #00FFFF; cursor: pointer;&quot;&gt;voice&lt;/span&gt; as clear as diamonds.
 
@@ -6656,7 +7201,7 @@ near Mulholland Drive...&lt;/span&gt;&lt;&lt;/malfunction&gt;&gt;
 
 &lt;&lt;timed 10s&gt;&gt;
   &lt;&lt;run playerDeath(&quot;THE SKY IMPLODES&lt;br&gt;AS THE CAR EXPLODES&lt;br&gt;AND YOUR MIND&lt;br&gt;FRACTURES......&quot;, &quot;temporal_paradox&quot;)&gt;&gt;
-&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="87" name="A look at history" tags="" position="1225,1125" size="100,100"></tw-passagedata><tw-passagedata pid="88" name="Computer Terminal" tags="" position="1950,200" size="100,100">&lt;!-- Computer Terminal Passage --&gt;
+&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="87" name="Computer Terminal" tags="" position="1950,200" size="100,100">&lt;!-- Computer Terminal Passage --&gt;
 &lt;div id=&quot;retro-terminal&quot;&gt;
   &lt;div class=&quot;terminal-screen&quot;&gt;
     &lt;div class=&quot;scan-lines&quot;&gt;&lt;/div&gt;
