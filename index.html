@@ -2335,13 +2335,12 @@ blockquote p {
   
   /* Improve link tappability */
   a, .link-internal, [class*="link"] {
-    padding: 8px !important;
-    margin: 8px 0 !important;
-    min-height: 44px !important; /* Apple's recommendation for touch targets */
-    min-width: 44px !important;
+    padding: 6px !important;
+    margin: 4px 0 !important;
+    min-height: 36px !important; /* Reduced but still touch-friendly */
     display: inline-block !important;
     line-height: 1.4 !important;
-    touch-action: manipulation !important; /* Prevents delay on touch devices */
+    touch-action: manipulation !important;
   }
   
   /* Fix scrolling banners that might cause horizontal overflow */
@@ -2376,12 +2375,23 @@ blockquote p {
     padding: 5px !important;
   }
   
-  /* Ensure buttons are well-spaced and tappable */
-  #author-note-button, #achievements-button, button, .continue-button {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    margin: 10px 5px !important;
-    padding: 10px !important;
+  /* Fixed button sizes for author/achievement buttons - much more reasonably sized */
+  #author-note-button, #achievements-button {
+    min-height: 30px !important;
+    min-width: auto !important;
+    height: auto !important;
+    margin: 8px 5px !important;
+    padding: 8px 12px !important;
+    font-size: 90% !important;
+    bottom: 60px !important; /* Adjusted position */
+  }
+  
+  /* Other buttons */
+  button, .continue-button {
+    min-height: 36px !important;
+    min-width: auto !important;
+    margin: 8px 5px !important;
+    padding: 8px 12px !important;
   }
 }
 
@@ -2402,6 +2412,12 @@ blockquote p {
   .tooltip .tooltiptext {
     width: 90% !important;
     left: 5% !important;
+  }
+  
+  /* Even smaller buttons on very small screens */
+  #author-note-button, #achievements-button {
+    font-size: 85% !important;
+    padding: 6px 10px !important;
   }
 }
 
